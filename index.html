@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Kewal Jewellers — Review Assistant</title>
+<meta name="description" content="Share your experience at Kewal Jewellers, Vishnu Garden." />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- Progress -->
+  <div class="progress-shell" id="progressShell" aria-hidden="true">
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="step-dots" id="stepDots"></div>
+  </div>
+
+  <main class="screens" id="screens">
+
+    <!-- STEP 0 — Welcome / Rating -->
+    <section class="screen active" id="screen-welcome" aria-label="Welcome">
+      <div class="mark" aria-hidden="true">
+        <div class="hallmark-seal">
+          <svg viewBox="0 0 120 120" width="72" height="72" role="img" aria-label="Kewal Jewellers hallmark">
+            <circle cx="60" cy="60" r="54" class="seal-ring"/>
+            <text x="60" y="55" text-anchor="middle" class="seal-letter">K</text>
+            <text x="60" y="80" text-anchor="middle" class="seal-sub">JEWELLERS</text>
+          </svg>
+        </div>
+      </div>
+      <p class="eyebrow">Kewal Jewellers</p>
+      <h1 class="headline">Thank you for<br/>visiting us&nbsp;❤️</h1>
+      <p class="subtext">Were you happy with your visit today?</p>
+
+      <div class="sentiment-row" id="sentimentRow">
+        <button class="sentiment-btn" id="sentimentGood" type="button" aria-label="Yes, I had a great visit">
+          <span class="sentiment-emoji">😊</span>
+          <span>Yes, loved it</span>
+        </button>
+        <button class="sentiment-btn" id="sentimentBad" type="button" aria-label="Not really">
+          <span class="sentiment-emoji">😕</span>
+          <span>Not quite</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP LOW RATING — private feedback only -->
+    <section class="screen" id="screen-lowrating" aria-label="Feedback">
+      <p class="eyebrow">We want to do better</p>
+      <h2 class="headline small">Tell us what<br/>went wrong</h2>
+      <p class="subtext">This feedback goes straight to our team — it will not be posted publicly.</p>
+      <textarea id="lowRatingText" class="textarea" rows="5" placeholder="What could we have done better?" aria-label="Your feedback"></textarea>
+      <button class="btn btn-primary" id="submitLowRating">Submit feedback</button>
+    </section>
+
+    <section class="screen" id="screen-lowthanks" aria-label="Feedback received">
+      <div class="mark" aria-hidden="true">
+        <div class="hallmark-seal subtle">
+          <svg viewBox="0 0 120 120" width="64" height="64">
+            <circle cx="60" cy="60" r="54" class="seal-ring"/>
+            <text x="60" y="68" text-anchor="middle" class="seal-letter">✓</text>
+          </svg>
+        </div>
+      </div>
+      <h2 class="headline small">Thank you for<br/>your honesty</h2>
+      <p class="subtext">Our team will personally follow up with you. We appreciate you taking the time to share this.</p>
+      <button class="btn btn-secondary" id="restartFromLow">Close</button>
+    </section>
+
+    <!-- STEP 1 — Purchases -->
+    <section class="screen" id="screen-purchase" aria-label="What did you purchase">
+      <p class="eyebrow">Step 1 of 2</p>
+      <h2 class="headline small">What did you<br/>purchase?</h2>
+      <p class="subtext">Select all that apply — add detail if you'd like.</p>
+      <div class="category-list" id="categoryList"></div>
+      <button class="btn btn-primary" id="toImpressed" disabled>Continue</button>
+    </section>
+
+    <!-- STEP 2 — Impressed chips + optional note + generate -->
+    <section class="screen" id="screen-impressed" aria-label="What impressed you">
+      <p class="eyebrow">Step 2 of 2</p>
+      <h2 class="headline small">What impressed<br/>you the most?</h2>
+      <p class="subtext">Select as many as you like.</p>
+      <div class="chip-grid" id="chipGrid"></div>
+
+      <button class="note-toggle" id="noteToggle" type="button" aria-expanded="false">
+        <span>＋ Add a personal note</span>
+        <span class="note-toggle-hint">optional</span>
+      </button>
+      <div class="note-panel" id="notePanel">
+        <textarea id="noteText" class="textarea" rows="3" placeholder="My mother loved the collection." aria-label="Additional comments"></textarea>
+      </div>
+
+      <button class="btn btn-primary btn-gold" id="generateBtn" disabled>✦ Generate &amp; Copy Review</button>
+    </section>
+
+    <!-- STEP 3 — Loading -->
+    <section class="screen" id="screen-loading" aria-label="Preparing review">
+      <div class="loader-wrap">
+        <div class="loader"></div>
+      </div>
+      <h2 class="headline small">Preparing your<br/>review...</h2>
+      <p class="subtext">Just a moment.</p>
+    </section>
+
+    <!-- STEP 4 — Success -->
+    <section class="screen" id="screen-success" aria-label="Review ready">
+      <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+      <div class="mark" aria-hidden="true">
+        <div class="success-icon">✓</div>
+      </div>
+      <h2 class="headline small">Review copied!</h2>
+      <p class="subtext" id="successSubtext">Opening Google Reviews — simply paste it in.</p>
+      <div class="review-card" id="reviewCard" tabindex="0" aria-live="polite"></div>
+      <button class="btn btn-ghost" id="regenerateBtn">↻ Try another version</button>
+      <button class="btn btn-secondary" id="copyAgainBtn">📋 Copy again</button>
+      <button class="btn btn-primary" id="reopenBtn">Open Google Reviews again</button>
+      <button class="btn btn-text" id="newReviewBtn">Start a new review</button>
+
+    </section>
+
+  </main>
+
+  <div class="snackbar" id="snackbar" role="status" aria-live="polite"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
