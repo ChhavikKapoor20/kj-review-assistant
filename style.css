@@ -238,20 +238,14 @@ button{ font-family: inherit; }
 }
 .chip:focus-visible, .subchip:focus-visible{ outline: 2px solid var(--gold-bright); outline-offset: 2px; }
 
-/* ============ Note toggle (folded, optional) ============ */
-.note-toggle{
-  display: flex; align-items: center; justify-content: space-between;
-  background: none; border: 1px dashed rgba(255,255,255,0.18);
-  color: var(--muted); padding: 12px 16px; border-radius: var(--radius-md);
-  font-size: 14px; cursor: pointer; margin-bottom: 14px; width: 100%;
-  transition: border-color .2s var(--ease), color .2s var(--ease);
+/* ============ Generate hint (read before tapping, since the redirect is instant) ============ */
+.generate-hint{
+  font-size: 13px;
+  color: var(--muted-2);
+  font-style: italic;
+  line-height: 1.5;
+  margin: 0 0 14px;
 }
-.note-toggle:hover{ border-color: var(--gold); color: var(--gold-bright); }
-.note-toggle-hint{ font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted-2); }
-.note-panel{
-  max-height: 0; overflow: hidden; transition: max-height .3s var(--ease);
-}
-.note-panel.open{ max-height: 160px; margin-bottom: 8px; }
 
 /* ============ Inputs ============ */
 .textarea{
@@ -302,27 +296,53 @@ button{ font-family: inherit; }
 }
 @keyframes spin{ 100%{ transform: rotate(360deg); } }
 
-/* ============ Success icon ============ */
-.success-icon{
-  width: 88px; height: 88px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--gold-bright), var(--gold-dim));
+/* ============ Handoff icon (deliberately not a checkmark — the task ============
+   isn't finished yet, the review still needs to be pasted and posted) ============ */
+.handoff-icon{
+  width: 84px; height: 84px; border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid rgba(205,164,78,0.35);
   display:flex; align-items:center; justify-content:center;
-  font-size: 38px; font-weight: bold; color: var(--ink);
-  box-shadow: 0 16px 34px rgba(205,164,78,0.35);
-  animation: pop .35s var(--ease);
+  font-size: 32px; font-weight: 600; color: var(--gold-bright);
+  animation: fade-scale-in .4s var(--ease);
 }
-@keyframes pop{
-  0%{ transform: scale(0.6); opacity: 0; }
+@keyframes fade-scale-in{
+  0%{ transform: scale(0.85); opacity: 0; }
   100%{ transform: scale(1); opacity: 1; }
 }
 
-/* ============ Confetti ============ */
-.confetti-layer{ position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 5; }
-.confetti-piece{
-  position: absolute; top: -10px; width: 8px; height: 12px; opacity: 0.9; border-radius: 2px;
-  animation: fall linear forwards;
+/* ============ Paste instructions ============ */
+.paste-steps{
+  text-align: left;
+  margin: 0 0 20px;
+  padding-left: 0;
+  list-style: none;
+  counter-reset: step;
 }
-@keyframes fall{ to{ transform: translateY(120vh) rotate(540deg); opacity: 0.2; } }
+.paste-steps li{
+  counter-increment: step;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+.paste-steps li::before{
+  content: counter(step);
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--gold-bright);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.paste-steps li strong{ color: var(--white); }
 
 /* ============ Snackbar ============ */
 .snackbar{
