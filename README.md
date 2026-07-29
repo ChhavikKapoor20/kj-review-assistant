@@ -1,10 +1,10 @@
 # Kewal Jewellers — Review Assistant
 
 A mobile-first "Review Assistant" web app. A customer scans a QR code in
-the shop, rates their visit, picks what they bought and what impressed
-them, and in **one tap** the app writes a natural, grammatically correct
-Google review based only on what they selected, copies it, and opens
-Google Reviews for them to paste it in.
+the shop, answers two quick questions about their visit, and in one tap
+the app writes a natural, grammatically correct Google review based
+only on what they selected, copies it, and opens Google Reviews so they
+can paste it in.
 
 No backend, no build tools, no npm, no frameworks — just three files:
 
@@ -14,11 +14,11 @@ style.css
 script.js
 ```
 
-## The flow (kept short on purpose)
+## The flow
 
 1. **Quick sentiment check** — a single tap on "😊 Yes, loved it" or
    "😕 Not quite" (not a 5-star picker). Google's own star rating is the
-   only one that counts publicly, so asking for stars here as well would
+   only one that counts publicly, so asking for stars here too would
    just be rating twice for no reason — this is only a fast way to keep
    an unhappy visit out of the public review flow.
    - "Not quite" → a private feedback box only. Nothing is ever pushed
@@ -28,19 +28,48 @@ script.js
    Services); tapping it opens quick sub-options (Ring, Chain, etc.) if
    the customer wants to be specific. Multiple categories can be picked.
    One "Continue" tap.
-3. **What impressed you?** — tap any number of chips. A small, collapsed
-   "＋ Add a personal note" link is folded into this same screen so
-   there's no separate step for it. One "✦ Generate & Copy Review" tap
-   finishes everything: it writes the review, copies it, and opens the
-   Google review page — all at once.
-4. A brief loading beat, then a **success screen** shows exactly what
-   was copied, so the customer can see it and just paste it in. A
-   "📋 Copy again" button is there too, in case a paste ever comes out
-   short. From there they can try another wording, reopen the Google
-   page, or start a fresh review for the next customer.
+3. **What impressed you?** — tap any number of chips. Right above the
+   "✦ Generate & Copy Review" button is a short line explaining exactly
+   what that tap will do (copy the review and open Google Reviews) —
+   read *before* tapping, since the tab switch that follows is instant
+   and there's no reliable moment to explain it afterwards.
+4. Tapping generate copies the review and opens Google Reviews in a new
+   tab, both at once. A brief loading beat, then this tab shows a
+   reference screen — what was copied, plus numbered steps for pasting
+   it in. This screen is deliberately *not* styled as "you're done": no
+   checkmark, no confetti — the review still needs to be pasted and
+   posted on Google, so nothing here should feel like a finish line.
+   From here they can copy again, try another wording, reopen the
+   Google tab, or start a fresh review for the next customer.
 
-That's 3 taps through the main flow (sentiment → continue → generate),
-down from the earlier 5-screen version.
+## Two design decisions worth knowing about
+
+**Why there's no "Review copied! 🎉" celebration screen.** Early
+versions had a checkmark, confetti, and "Review copied!" right after
+generating. That combination reads as "task complete" — and the actual
+task (posting to Google) isn't done yet. A screen that *feels* finished
+gives people a natural point to stop and put their phone away before
+they've actually pasted anything. So the review-copied screen intentionally
+looks like a mid-step reference (an arrow icon, "paste it into Google
+Reviews" as the heading), not a reward.
+
+**Why the review never says "my wife", "my husband", "my daughter",
+etc.** Earlier sentence variety included lines like "my mother
+suggested…" or "my husband and I chose…" for more natural-sounding
+variety. The problem: the app has no idea whether the customer is male,
+female, married, has children, or has living parents — so any of those
+assume something we have no basis for. If a detail like that is wrong,
+it's the one thing in the review the customer notices immediately (since
+they're reading it as if it were their own words), and it undermines
+trust in the rest of the text too. Every sentence pool now sticks to
+"I", "We", "My family", or "Recently" as the subject — natural, varied,
+and true for literally any customer.
+
+There's also no "personal note" field anymore. Since this app is a
+combination of pre-written sentence arrays rather than an AI model, it
+can't intelligently weave in freeform text the way a generative model
+could — it could only awkwardly append whatever was typed. Removing it
+keeps every part of the output equally reliable.
 
 ---
 
@@ -60,9 +89,18 @@ You don't need to know how to code for this part.
 10. Wait 1–2 minutes, then refresh the page — you'll see a link like:
     `https://yourusername.github.io/kewal-review-assistant/`
 11. Open that link on your phone to test it, then generate a QR code
-    for it (see step below).
+    for it (see step below). You don't need to fill in the "Custom
+    domain" field — it's optional and unnecessary for a QR-scan flow
+    like this one, since nobody types the URL by hand.
 
 That's it — the site is now live and free forever on GitHub.
+
+If you update any file later, upload the changed file again the same
+way (Add file → Upload files → Commit changes) and GitHub Pages will
+redeploy automatically within a minute or two. If the live page still
+shows old text after that, it's almost always just your phone/browser
+caching the old version — a hard refresh (or closing and reopening the
+tab) clears it.
 
 ## 2. How to test it right now, without uploading anywhere
 
@@ -148,21 +186,22 @@ you" chips.
 ## 7. How the review generation works
 
 This is a **grammar assistant, not an AI review generator**. It never
-invents anything the customer didn't select.
+invents anything the customer didn't select, and it never assumes
+anything about who the customer is.
 
 1. There are four pools of pre-written sentence fragments: ~40
    **introductions**, ~40 **purchase sentences**, ~40 **appreciation
    sentences**, and ~30 **endings** (a small share of which naturally
    mention "Vishnu Garden" or "West Delhi" — about 1 in 8 reviews).
+   Every line uses only "I", "We", "My family", or "Recently" as its
+   subject — nothing gendered or relationship-specific.
 2. When the customer taps "Generate & Copy Review," the app randomly
    picks one sentence from each pool, fills in the customer's actual
    selections, and joins them into one paragraph.
-3. If the customer added a personal note, it's appended as-is (lightly
-   cleaned up for capitalisation and punctuation).
-4. The app checks the result is roughly 40–80 words; if a random
+3. The app checks the result is roughly 40–80 words; if a random
    combination comes out too short or too long, it tries a few more
    combinations and keeps the best-fitting one.
-5. Because sentences are mixed and matched from four independent pools,
+4. Because sentences are mixed and matched from four independent pools,
    there are thousands of possible combinations — no two customers are
    likely to get the same wording, even with the same purchase.
 
