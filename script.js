@@ -106,6 +106,14 @@
    * GRAMMAR ENGINE — sentence pools
    * {items} = natural joined list of purchased products/services
    * {impressed} = natural joined list of what impressed the customer
+   *
+   * IMPORTANT: every line here is deliberately gender- and relationship-
+   * neutral (uses only "I", "We", "My family", or "Recently" as the
+   * subject). Since we have no idea whether the customer is male,
+   * female, married, has kids, has living parents, etc., anything like
+   * "my wife", "my husband", "my mother-in-law", "my daughter" would be
+   * an assumption we have no basis for — and a wrong one reads as
+   * obviously fake to the customer reviewing their own words.
    * ------------------------------------------------------------------ */
 
   const INTROS = [
@@ -120,7 +128,7 @@
     "Recently, I decided to check out {biz}, and it was worth it.",
     "We've been customers of {biz} for some time, and they continue to impress us.",
     "I dropped by {biz} on a friend's recommendation and had a great experience.",
-    "My mother suggested {biz}, and our visit went really well.",
+    "Recently, I made time to visit {biz} and it was worth it.",
     "We spent a good hour at {biz} and enjoyed every bit of it.",
     "I recently made a purchase at {biz} and wanted to share how it went.",
     "It was our first time at {biz}, and it left a strong impression.",
@@ -128,21 +136,21 @@
     "Recently, I was looking for something special and found it at {biz}.",
     "We walked into {biz} on a whim and ended up thoroughly impressed.",
     "I had heard good things about {biz} before visiting, and they held true.",
-    "My sister recommended {biz}, so we decided to visit together.",
+    "We had been planning to visit {biz} for a while, and it finally happened.",
     "I stopped by {biz} while shopping in the area and had a smooth experience.",
     "We recently celebrated a small occasion with a purchase from {biz}.",
     "My family and I have shopped at {biz} more than once now.",
     "I wasn't sure what to expect at {biz}, but it exceeded expectations.",
     "Recently, {biz} came highly recommended, and I decided to give it a try.",
     "We took some time out to visit {biz} last week.",
-    "My father has been a long-time customer of {biz}, and I now understand why.",
+    "I've always liked shopping at {biz}, and this visit reinforced that.",
     "I've shopped at a few jewellery stores before, but {biz} stood out.",
     "We were looking for a reliable jeweller and found {biz}.",
     "My family recently visited {biz} for an upcoming celebration.",
     "It's always a pleasure visiting {biz}, and this time was no exception.",
     "I recently completed a purchase at {biz} and thought I'd share my experience.",
     "We planned our visit to {biz} carefully, and it paid off.",
-    "My wife and I visited {biz} together over the weekend.",
+    "We were pleasantly surprised by our visit to {biz}.",
     "I've been meaning to visit {biz} for a while, and I'm glad I finally did.",
     "Recently, our whole family made a trip to {biz}.",
     "We were referred to {biz} by a relative, and the visit went smoothly.",
@@ -161,7 +169,7 @@
     "We finally settled on {items} after some thought.",
     "I selected {items}, and it turned out beautifully.",
     "We got {items}, and the quality really stood out.",
-    "My mother picked out {items} for herself.",
+    "I finally chose {items} after comparing a few options.",
     "I went in for {items} specifically.",
     "We came away with {items} that day.",
     "I decided on {items} after browsing a few options.",
@@ -169,29 +177,29 @@
     "We opted for {items}, and it was a good decision.",
     "I ended up with {items}, which I'm quite pleased about.",
     "We chose {items} in the end.",
-    "My sister picked {items} during our visit.",
+    "We agreed on {items} without much difficulty.",
     "I went ahead with {items} that day.",
     "We settled on {items} without much back and forth.",
-    "My wife chose {items}, and she couldn't be happier.",
+    "We went with {items} in the end.",
     "I got {items} made specially.",
     "We picked {items} as a small family purchase.",
-    "My father bought {items} during the visit.",
+    "I ended up going with {items}.",
     "I finalised {items} after trying out a few designs.",
     "We took home {items} that day.",
     "My family decided on {items} together.",
     "I picked {items}, and it fit the occasion perfectly.",
     "We ended up buying {items}.",
     "I chose to go with {items} in the end.",
-    "My mother-in-law suggested {items}, and we agreed.",
+    "I settled on {items} after some back and forth.",
     "We narrowed it down to {items} after some discussion.",
     "I opted for {items} without a second thought.",
     "My family went with {items} for the celebration.",
     "We were happy to settle on {items}.",
     "I finally picked {items} after weeks of thinking about it.",
-    "My husband and I chose {items} together.",
+    "We picked out {items} together.",
     "We decided on {items}, and it was well worth it.",
     "I got {items}, and it turned out even better than expected.",
-    "My daughter picked out {items} for herself."
+    "I chose {items} for the occasion."
   ];
 
   const APPRECIATION_SENTENCES = [
@@ -211,7 +219,7 @@
     "What I liked most about the visit was {impressed}.",
     "We felt {impressed} really set the visit apart.",
     "I was struck by {impressed} throughout the visit.",
-    "My mother mentioned how much she appreciated {impressed}.",
+    "I really valued {impressed}.",
     "We left with a strong impression of {impressed}.",
     "It's worth mentioning {impressed}, which added to the experience.",
     "I found {impressed} to be a real highlight.",
@@ -223,16 +231,16 @@
     "The part that stood out to us was {impressed}.",
     "I appreciated {impressed} more than I expected to.",
     "We were happy to experience {impressed} firsthand.",
-    "My father commented on {impressed} as well.",
+    "We were struck by {impressed} as well.",
     "It was clear from the start that {impressed} mattered to the team.",
     "We felt genuinely taken care of, especially given {impressed}.",
     "I walked away thinking about {impressed}.",
-    "My sister also noticed {impressed} during our visit.",
+    "What resonated with us most was {impressed}.",
     "We were reassured by {impressed} throughout.",
     "I'd say {impressed} made the biggest impression on me.",
     "We really valued {impressed} during our time there.",
     "It left a mark on us, particularly {impressed}.",
-    "My wife pointed out {impressed}, and I agreed completely.",
+    "I'd point to {impressed} as a real highlight.",
     "We appreciated {impressed} more than a typical showroom visit.",
     "I can confidently say {impressed} made all the difference."
   ];
@@ -278,7 +286,6 @@
     sentiment: null,
     selectedCategories: {},   // { gold: Set(['Ring','Chain']), services: Set([]) ... }
     selectedImpressed: new Set(),
-    note: "",
     currentReview: ""
   };
 
@@ -346,15 +353,7 @@
       const purchase = pick(PURCHASE_SENTENCES).replace(/{items}/g, itemsStr);
       const appreciation = pick(APPRECIATION_SENTENCES).replace(/{impressed}/g, impressedStr);
 
-      let sentence = [intro, purchase, appreciation, ending.text].join(" ");
-
-      if (state.note && state.note.trim().length > 0) {
-        let note = state.note.trim();
-        note = note.charAt(0).toUpperCase() + note.slice(1);
-        if (!/[.!?]$/.test(note)) note += ".";
-        sentence += " " + note;
-      }
-
+      const sentence = [intro, purchase, appreciation, ending.text].join(" ");
       const wc = wordCount(sentence);
 
       if (wc >= 40 && wc <= 80) {
@@ -429,7 +428,7 @@
   sentimentBadBtn.addEventListener("click", () => handleSentiment(false, sentimentBadBtn));
 
   /* ------------------------------------------------------------------ *
-   * LOW RATING FLOW
+   * LOW SENTIMENT FLOW
    * ------------------------------------------------------------------ */
   document.getElementById("submitLowRating").addEventListener("click", () => {
     // No backend — captured client-side only, as specified.
@@ -525,13 +524,10 @@
   });
 
   /* ------------------------------------------------------------------ *
-   * STEP 2 — Impressed chips + optional note + generate
+   * STEP 2 — Impressed chips + generate
    * ------------------------------------------------------------------ */
   const chipGridEl = document.getElementById("chipGrid");
   const generateBtn = document.getElementById("generateBtn");
-  const noteToggle = document.getElementById("noteToggle");
-  const notePanel = document.getElementById("notePanel");
-  const noteTextEl = document.getElementById("noteText");
 
   function buildImpressedUI() {
     chipGridEl.innerHTML = "";
@@ -555,27 +551,9 @@
     });
   }
 
-  noteToggle.addEventListener("click", () => {
-    const isOpen = notePanel.classList.toggle("open");
-    noteToggle.setAttribute("aria-expanded", String(isOpen));
-    noteToggle.querySelector("span").textContent = isOpen ? "\u2212 Personal note" : "\uFF0B Add a personal note";
-    if (isOpen) noteTextEl.focus();
-  });
-
   /* ------------------------------------------------------------------ *
-   * STEP 3/4 — Generate, copy, open Google, loading, success
-   * (Combined into one tap: generate -> copy -> open review link ->
-   *  short loading beat -> success screen with the review shown.)
+   * Copy helpers — synchronous, deterministic, primary method
    * ------------------------------------------------------------------ */
-  const reviewCardEl = document.getElementById("reviewCard");
-  const successSubtext = document.getElementById("successSubtext");
-  let reviewWindowRef = null;
-
-  // Synchronous, deterministic copy — completes fully in this tick, so it
-  // can never be interrupted by the tab-switch that window.open() causes.
-  // This is the PRIMARY copy method (not just a fallback), because the
-  // async Clipboard API can be cut short on mobile once focus moves to a
-  // newly opened tab, which is what was causing partial/truncated copies.
   function copyToClipboardSync(text) {
     const ta = document.createElement("textarea");
     ta.value = text;
@@ -601,11 +579,6 @@
     return ok;
   }
 
-  // Best-effort upgrade via the modern async API, fired after the
-  // synchronous copy above has already guaranteed a full copy. If this
-  // succeeds it simply re-confirms the same text; if it's blocked (many
-  // in-app browsers like Instagram/WhatsApp restrict it) the sync copy
-  // above already has it covered.
   function copyToClipboardAsync(text) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).catch(() => { /* sync copy already covered it */ });
@@ -618,22 +591,29 @@
     return ok;
   }
 
+  /* ------------------------------------------------------------------ *
+   * STEP 3/4 — Generate, copy, open Google, then a reference screen
+   * (not a "finished" screen — the review still needs to be pasted and
+   * posted on Google, so there's no checkmark/confetti "you're done"
+   * moment here on purpose.)
+   * ------------------------------------------------------------------ */
+  const reviewCardEl = document.getElementById("reviewCard");
+
   generateBtn.addEventListener("click", () => {
-    state.note = noteTextEl.value;
     state.currentReview = generateReviewText();
 
-    // Copy FIRST, synchronously, then open the review link — in that
-    // order, every time. Opening the tab first (the old order) was the
-    // bug: it can shift focus before the copy finishes.
+    // Copy AND open the Google tab synchronously, both within this same
+    // click handler — that's what keeps mobile browsers from blocking the
+    // pop-up. Because the tab switch is usually instant, there's no
+    // reliable way to show a "here's what to do" message in between; that
+    // instruction lives on the previous screen, read before this tap.
     copyReviewText(state.currentReview);
-    reviewWindowRef = window.open(CONFIG.googleReviewUrl, "_blank", "noopener");
+    window.open(CONFIG.googleReviewUrl, "_blank", "noopener");
 
     showScreen("screen-loading");
     setTimeout(() => {
       reviewCardEl.textContent = state.currentReview;
-      successSubtext.textContent = "Opening Google Reviews — simply paste it in.";
       showScreen("screen-success");
-      launchConfetti();
     }, CONFIG.loadingDelayMs);
   });
 
@@ -652,7 +632,7 @@
   document.getElementById("reopenBtn").addEventListener("click", () => {
     copyReviewText(state.currentReview);
     window.open(CONFIG.googleReviewUrl, "_blank", "noopener");
-    showSnackbar("Review copied again. Simply paste it into Google Reviews.");
+    showSnackbar("Review copied. Paste it into Google Reviews.");
   });
 
   document.getElementById("newReviewBtn").addEventListener("click", () => {
@@ -672,42 +652,16 @@
   }
 
   /* ------------------------------------------------------------------ *
-   * Confetti (lightweight, DOM-based)
-   * ------------------------------------------------------------------ */
-  const confettiLayer = document.getElementById("confettiLayer");
-  const CONFETTI_COLORS = ["#cda44e", "#e8c877", "#ffffff", "#8a6f34"];
-
-  function launchConfetti() {
-    confettiLayer.innerHTML = "";
-    const count = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 26;
-    for (let i = 0; i < count; i++) {
-      const piece = document.createElement("div");
-      piece.className = "confetti-piece";
-      piece.style.left = Math.random() * 100 + "%";
-      piece.style.background = pick(CONFETTI_COLORS);
-      piece.style.animationDuration = (1.6 + Math.random() * 1.4) + "s";
-      piece.style.animationDelay = (Math.random() * 0.4) + "s";
-      confettiLayer.appendChild(piece);
-    }
-    setTimeout(() => { confettiLayer.innerHTML = ""; }, 3200);
-  }
-
-  /* ------------------------------------------------------------------ *
    * Reset — ready for the next customer
    * ------------------------------------------------------------------ */
   function resetApp() {
     state.sentiment = null;
     state.selectedCategories = {};
     state.selectedImpressed = new Set();
-    state.note = "";
     state.currentReview = "";
     sentimentGoodBtn.classList.remove("chosen");
     sentimentBadBtn.classList.remove("chosen");
     document.getElementById("lowRatingText").value = "";
-    noteTextEl.value = "";
-    notePanel.classList.remove("open");
-    noteToggle.setAttribute("aria-expanded", "false");
-    noteToggle.querySelector("span").textContent = "\uFF0B Add a personal note";
     generateBtn.disabled = true;
     toImpressedBtn.disabled = true;
     showScreen("screen-welcome");
