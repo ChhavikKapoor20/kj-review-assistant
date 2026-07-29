@@ -21,7 +21,7 @@
 
   <main class="screens" id="screens">
 
-    <!-- STEP 0 — Welcome / Rating -->
+    <!-- STEP 0 — Welcome / Sentiment check -->
     <section class="screen active" id="screen-welcome" aria-label="Welcome">
       <div class="mark" aria-hidden="true">
         <div class="hallmark-seal">
@@ -48,7 +48,7 @@
       </div>
     </section>
 
-    <!-- STEP LOW RATING — private feedback only -->
+    <!-- STEP LOW SENTIMENT — private feedback only -->
     <section class="screen" id="screen-lowrating" aria-label="Feedback">
       <p class="eyebrow">We want to do better</p>
       <h2 class="headline small">Tell us what<br/>went wrong</h2>
@@ -80,21 +80,14 @@
       <button class="btn btn-primary" id="toImpressed" disabled>Continue</button>
     </section>
 
-    <!-- STEP 2 — Impressed chips + optional note + generate -->
+    <!-- STEP 2 — Impressed chips + generate -->
     <section class="screen" id="screen-impressed" aria-label="What impressed you">
       <p class="eyebrow">Step 2 of 2</p>
       <h2 class="headline small">What impressed<br/>you the most?</h2>
       <p class="subtext">Select as many as you like.</p>
       <div class="chip-grid" id="chipGrid"></div>
 
-      <button class="note-toggle" id="noteToggle" type="button" aria-expanded="false">
-        <span>＋ Add a personal note</span>
-        <span class="note-toggle-hint">optional</span>
-      </button>
-      <div class="note-panel" id="notePanel">
-        <textarea id="noteText" class="textarea" rows="3" placeholder="My mother loved the collection." aria-label="Additional comments"></textarea>
-      </div>
-
+      <p class="generate-hint">Tapping below copies your review and opens Google Reviews — just paste it into the review box there.</p>
       <button class="btn btn-primary btn-gold" id="generateBtn" disabled>✦ Generate &amp; Copy Review</button>
     </section>
 
@@ -107,20 +100,26 @@
       <p class="subtext">Just a moment.</p>
     </section>
 
-    <!-- STEP 4 — Success -->
-    <section class="screen" id="screen-success" aria-label="Review ready">
-      <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+    <!-- STEP 4 — Handoff reference screen (not a "finished" screen — the -->
+    <!-- actual review still needs to be pasted and posted on Google)     -->
+    <section class="screen" id="screen-success" aria-label="Paste your review">
       <div class="mark" aria-hidden="true">
-        <div class="success-icon">✓</div>
+        <div class="handoff-icon">↗</div>
       </div>
-      <h2 class="headline small">Review copied!</h2>
-      <p class="subtext" id="successSubtext">Opening Google Reviews — simply paste it in.</p>
+      <h2 class="headline small">Paste it into<br/>Google Reviews</h2>
+      <p class="subtext">We've opened a new tab with Google Reviews and copied your review to the clipboard.</p>
       <div class="review-card" id="reviewCard" tabindex="0" aria-live="polite"></div>
-      <button class="btn btn-ghost" id="regenerateBtn">↻ Try another version</button>
-      <button class="btn btn-secondary" id="copyAgainBtn">📋 Copy again</button>
-      <button class="btn btn-primary" id="reopenBtn">Open Google Reviews again</button>
-      <button class="btn btn-text" id="newReviewBtn">Start a new review</button>
 
+      <ol class="paste-steps">
+        <li>Switch to the <strong>Google Reviews</strong> tab</li>
+        <li>Tap the review box there</li>
+        <li>Press and hold, then tap <strong>Paste</strong></li>
+      </ol>
+
+      <button class="btn btn-primary" id="reopenBtn">Open Google Reviews</button>
+      <button class="btn btn-secondary" id="copyAgainBtn">📋 Copy again</button>
+      <button class="btn btn-ghost" id="regenerateBtn">↻ Try another version</button>
+      <button class="btn btn-text" id="newReviewBtn">Start a new review</button>
     </section>
 
   </main>
