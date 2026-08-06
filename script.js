@@ -11,7 +11,8 @@
    * ------------------------------------------------------------------ */
   const CONFIG = {
     businessName: "Kewal Jewellers",
-    googleReviewUrl: "https://g.page/r/CWSPqeqCFgtDEBE/review",
+    googleReviewUrl: "https://maps.app.goo.gl/PwooPX1xFZnYCBB67?g_st=ic",
+    // googleReviewUrl: "https://g.page/r/CWSPqeqCFgtDEBE/review",
     locationMentionChance: 0.13, // ~13% of generated reviews naturally mention the area
     loadingDelayMs: 700          // small pause so the loading screen feels intentional, not broken
   };
